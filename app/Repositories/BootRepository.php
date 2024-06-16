@@ -70,7 +70,7 @@ SQL
             1 => [
                 'species' => 'pine',
                 'grading_system' => 'nordic_blue',
-                'grade' => 'A1',
+                'grade' => 'a1',
                 'drying' => 'fresh',
                 'treatment' => 'null', // the unique key is failing with null ( particular to SQLite )
                 'thickness' => 50,
@@ -81,7 +81,7 @@ SQL
             2 => [
                 'species' => 'spruce',
                 'grading_system' => 'nordic_blue',
-                'grade' => 'A1',
+                'grade' => 'a1',
                 'drying' => 'fresh',
                 'treatment' => 'null',
                 'thickness' => 50,
@@ -92,7 +92,7 @@ SQL
             3 => [
                 'species' => 'spruce',
                 'grading_system' => 'nordic_blue',
-                'grade' => 'A1',
+                'grade' => 'a1',
                 'drying' => 'fresh',
                 'treatment' => 'heat',
                 'thickness' => 50,

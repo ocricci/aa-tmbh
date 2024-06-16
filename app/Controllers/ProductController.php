@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use App\Actions\ProductAction;
 
 class ProductController extends AbstractController
 {
@@ -36,6 +35,30 @@ class ProductController extends AbstractController
         }
 
         return $this->handleSuccessResponse($response, $product);
+    }
+
+    public function create(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args
+    ): ResponseInterface {
+        $parsedBody = $request->getParsedBody();
+
+        // @todo move to middleware
+        // the unique key fails for null values in SQLite3
+        if (empty($parsedBody['treatment'])) {
+            $parsedBody['treatment'] = 'null';
+        }
+
+        $validator = $this->action->validate($parsedBody);
+        if (false == $validator->isValid()) {
+            return $this->handleUnprocessableEntityResponse(
+                $response,
+                $validator->getMessage()
+            );
+        }
+
+        return $response;
     }
 }
 

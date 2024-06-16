@@ -17,6 +17,8 @@ AppFactory::setContainer($container);
 
 $app = AppFactory::create();
 
+$app->addBodyParsingMiddleware();
+
 $app->get('/', function (Request $request, Response $response, $args) {
     $response->getBody()->write("Timberhub!");
     return $response;
@@ -52,5 +54,6 @@ $app->get('/suppliers/{id}', [SupplierController::class, 'getById']);
 
 $app->get('/products', [ProductController::class, 'getAll']);
 $app->get('/products/{id}', [ProductController::class, 'getById']);
+$app->post('/products', [ProductController::class, 'create']);
 
 $app->run();

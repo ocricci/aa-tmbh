@@ -2,7 +2,7 @@
 
 namespace App\Actions;
 
-use App\Repositories\ProductRepository;
+use App\Actions\Validators\ProductValidator;
 
 class ProductAction extends AbstractAction
 {
@@ -14,6 +14,13 @@ class ProductAction extends AbstractAction
     public function getById(int $id): array
     {
         return $this->repository->getById($id);
+    }
+
+    public function validate(array $product = []): ProductValidator
+    {
+        $validator = new ProductValidator();
+        $validator->validate($product);
+        return $validator;
     }
 }
 
