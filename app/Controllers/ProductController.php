@@ -24,7 +24,18 @@ class ProductController extends AbstractController
         ResponseInterface $response,
         array $args
     ): ResponseInterface {
-        return $response;
+        $id = (int) $args['id'] ?? '';
+
+        if (empty($id)) {
+            return $this->handleUnprocessableEntityResponse($response, "Invalid id informed");
+        }
+
+        $product = $this->action->getById($id);
+        if (0 == count($product)) {
+            return $this->handleEntityNotFound($response, "Entity not found [{$id}]");
+        }
+
+        return $this->handleSuccessResponse($response, $product);
     }
 }
 
