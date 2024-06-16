@@ -4,13 +4,18 @@ namespace App\Repositories;
 
 abstract class AbstractRepository
 {
+    const DATABASE_PATH = '/storage/';
+    const DATABASE_FILE = 'timberhub.db3';
+
     protected static ?\SQLite3 $SQLite3 = null;
 
     protected static function getSQLite3(): \SQLite3
     {
         if (false == (self::$SQLite3 instanceof \SQLite3)) {
-            $database = $_SERVER['DOCUMENT_ROOT'] . '/../storage/timberhub.db3';
-            self::$SQLite3 = new \SQLite3($database);
+            $databaseFile = $_SERVER['DOCUMENT_ROOT'] . '/..';
+            $databaseFile .= self::DATABASE_PATH;
+            $databaseFile .= self::DATABASE_FILE;
+            self::$SQLite3 = new \SQLite3($databaseFile);
         }
 
         return self::$SQLite3;
