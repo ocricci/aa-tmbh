@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Entities\Product;
+
+class ProductRepository extends AbstractRepository
+{
+    public function getAll(): array
+    {
+        return $this->fetchAsArray("SELECT * FROM products;");
+    }
+
+    public function getById(int $id): array
+    {
+        return $this->fetchAsArray(
+            "SELECT * FROM products WHERE id = :id;",
+            [
+                [':id', $id, SQLITE3_INTEGER],
+            ]
+        );
+    }
+
+    public function findByUniqueKey(array $product)
+    {
+        $query = "SELECT * FROM products WHERE";
+        $args = [];
+        foreach (Product::$unique as $field => $type) {
+            $query .= " {$field} = :{$field} ";
+            $args[] = [":{$field}", $product[$field], $type];
+            if (count($args) != count(Product::$unique)) {
+                $query .= " AND ";
+            }
+        }
+
+        return $this->fetchAsArray($query, $args);
+    }
+
+    public function create(array $product)
+    {
+        $query = "INSERT INTO products(";
+        $query .= implode(',', array_keys($product));
+        $query .= ") VALUES (";
+        $values = array_map(
+            function ($value) {
+                if (is_null($value)) {
+                    return 'NULL';
+                }
+
+                if (is_int($value)) {
+                    return $value;
+                }
+
+                return "\"{$value}\"";
+            },
+            array_values($product)
+        );
+
+        $query .= implode(',', $values);
+        $query .= ");";
+
+        $SQLite3 = $this->getSQLite3();
+        $SQLite3->exec($query);
+        return $this->findByUniqueKey($product);
+    }
+}
+

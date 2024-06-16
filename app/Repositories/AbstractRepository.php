@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-abstract class AbstractRepository
+abstract class AbstractRepository implements RepositoryInterface
 {
     const DATABASE_PATH = '/storage/';
     const DATABASE_FILE = 'timberhub.db3';
@@ -34,6 +34,11 @@ abstract class AbstractRepository
         $result = $stmt->execute();
         if (0 == $result->numColumns()) {
             return [];
+        }
+
+        // @todo add pagination support, just in case !
+        if (25 < $result->numColumns()) {
+            exit("This demo app has no pagination support");
         }
 
         $resultArray = [];
