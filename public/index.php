@@ -1,8 +1,9 @@
 <?php
 
 use DI\Container;
-use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Container\ContainerInterface;
 use App\Controllers\SupplierController;
 use App\Controllers\BootController;
@@ -16,6 +17,22 @@ $container = new Container();
 AppFactory::setContainer($container);
 
 $app = AppFactory::create();
+
+/**
+ * Middleware to handle null or empty value for treatment
+ * SQLite3 loses the unique key when using NULL
+ */
+$app->add(function (Request $request, RequestHandler $handler) {
+    if ($request->getMethod() == "POST" && str_contains((string) $request->getUri(), "products")) {
+        $parsedBody = $request->getParsedBody();
+        if (empty($parsedBody['treatment'])) {
+            $parsedBody['treatment'] = 'null';
+            $request = $request->withParsedBody($parsedBody);
+        }
+    }
+
+    return $handler->handle($request);
+});
 
 $app->addBodyParsingMiddleware();
 

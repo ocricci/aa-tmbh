@@ -43,13 +43,6 @@ class ProductController extends AbstractController
         array $args
     ): ResponseInterface {
         $parsedBody = $request->getParsedBody();
-
-        // @todo move to middleware
-        // the unique key fails for null values in SQLite3
-        if (empty($parsedBody['treatment'])) {
-            $parsedBody['treatment'] = 'null';
-        }
-
         $validator = $this->action->validate($parsedBody);
         if (false == $validator->isValid()) {
             return $this->handleUnprocessableEntityResponse(
