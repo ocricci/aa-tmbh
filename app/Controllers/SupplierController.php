@@ -4,7 +4,6 @@ namespace App\Controllers;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use App\Actions\SupplierAction;
 
 class SupplierController extends AbstractController
 {
@@ -15,7 +14,7 @@ class SupplierController extends AbstractController
     ): ResponseInterface {
         return $this->handleSuccessResponse(
             $response,
-            (new SupplierAction())->getAll()
+            $this->action->getAll()
         );
     }
 
@@ -30,7 +29,7 @@ class SupplierController extends AbstractController
             return $this->handleUnprocessableEntityResponse($response, "Invalid id informed");
         }
 
-        $supplier = (new SupplierAction())->getById($id);
+        $supplier = $this->action->getById($id);
         if (0 == count($supplier)) {
             return $this->handleEntityNotFound($response, "Entity not found [{$id}]");
         }

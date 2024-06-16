@@ -2,7 +2,7 @@
 
 namespace App\Repositories;
 
-abstract class AbstractRepository
+abstract class AbstractRepository implements RepositoryInterface
 {
     const DATABASE_PATH = '/storage/';
     const DATABASE_FILE = 'timberhub.db3';

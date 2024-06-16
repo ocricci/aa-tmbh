@@ -2,20 +2,16 @@
 
 namespace App\Actions;
 
-use App\Repositories\SupplierRepository;
-
-class SupplierAction
+class SupplierAction extends AbstractAction
 {
     public function getAll(): array
     {
-        $supplierRepository = new SupplierRepository();
-        return $supplierRepository->getAll();
+        return $this->repository->getAll();
     }
 
     public function getById(int $id): array
     {
-        $supplierRepository = new SupplierRepository();
-        return $supplierRepository->getById($id);
+        return $this->repository->getById($id);
     }
 }
 
