@@ -51,7 +51,8 @@ class ProductController extends AbstractController
             );
         }
 
-        return $response;
+        $product = $this->action->create($parsedBody);
+        return $this->handleSuccessResponse($response, $product);
     }
 }
 

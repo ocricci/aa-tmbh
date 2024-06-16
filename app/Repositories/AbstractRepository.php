@@ -36,6 +36,11 @@ abstract class AbstractRepository implements RepositoryInterface
             return [];
         }
 
+        // @todo add pagination support, just in case !
+        if (25 < $result->numColumns()) {
+            exit("This demo app has no pagination support");
+        }
+
         $resultArray = [];
         while ($resultItem = $result->fetchArray(SQLITE3_ASSOC)) {
             $resultArray[] = $resultItem;

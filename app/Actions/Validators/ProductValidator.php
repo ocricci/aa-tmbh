@@ -2,26 +2,17 @@
 
 namespace App\Actions\Validators;
 
+use App\Entities\Product;
+
 class ProductValidator
 {
-    public array $required = [
-        "species" => ['pine', 'spruce', 'fir', 'birch', 'apple_tree'],
-        "grading_system" => ['nordic_blue', 'tegernseer'],
-        "grade" => "string",
-        "drying" => ['fresh', 'kiln_dried', 'air_dried'],
-        "treatment" => ['heat', 'anti_strain', 'null'], // optional
-        "thickness" => "int",
-        "width" => "int",
-        "length" => "int",
-    ];
-
     protected bool $isValid = true;
 
     protected string $message = '';
 
     public function validate(array $product = [])
     {
-        foreach ($this->required as $field => $rules) {
+        foreach (Product::$required as $field => $rules) {
             if (empty($product[$field])) {
                 $this->message = "The field {$field} is required";
                 $this->isValid = false;
