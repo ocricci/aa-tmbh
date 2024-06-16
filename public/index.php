@@ -30,11 +30,6 @@ $container[SupplierController::class] = function (ContainerInterface $container)
 $app->get('/boot', [BootController::class, 'boot']);
 
 $app->get('/suppliers', [SupplierController::class, 'getAll']);
-$app->get('/suppliers/{id}', function (Request $request, Response $response, $args) {
-    $response->getBody()->write(json_encode(['Supplier: ' . $args['id'] ?? 'ID is missing']));
-    return $response
-        ->withHeader('Content-type', 'application/json')
-        ->withStatus(200);
-});
+$app->get('/suppliers/{id}', [SupplierController::class, 'getById']);
 
 $app->run();

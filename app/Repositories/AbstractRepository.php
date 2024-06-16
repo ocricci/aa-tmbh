@@ -25,6 +25,12 @@ abstract class AbstractRepository
     {
         $SQLite3 = self::getSQLite3();
         $stmt = $SQLite3->prepare($query);
+        if (count($args) > 0) {
+            foreach ($args as $arg) {
+                $stmt->bindValue($arg[0], $arg[1], $arg[2]);
+            }
+        }
+
         $result = $stmt->execute();
         if (0 == $result->numColumns()) {
             return [];
