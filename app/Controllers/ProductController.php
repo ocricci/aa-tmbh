@@ -51,8 +51,13 @@ class ProductController extends AbstractController
             );
         }
 
-        $product = $this->action->create($parsedBody);
-        return $this->handleSuccessResponse($response, $product);
+        try {
+            $product = $this->action->create($parsedBody);
+            return $this->handleSuccessResponse($response, $product);
+        } catch (\Exception $e) {
+            // @todo log $e
+            return $this->unexpectedResponse($response, "Internal server error");
+        }
     }
 }
 

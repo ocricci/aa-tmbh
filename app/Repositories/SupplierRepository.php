@@ -11,12 +11,14 @@ class SupplierRepository extends AbstractRepository
 
     public function getById(int $id): array
     {
-        return $this->fetchAsArray(
+        $supplier = $this->fetchAsArray(
             "SELECT * FROM suppliers WHERE id = :id;",
             [
                 [':id', $id, SQLITE3_INTEGER],
             ]
         );
+
+        return $supplier[0] ?? [];
     }
 }
 

@@ -27,15 +27,13 @@ class ProductAction extends AbstractAction
     public function create(array $product): array
     {
         $registered = $this->repository->findByUniqueKey($product);
-        if (!empty($registered[0]['id'] ?? '')) {
-            return $registered[0];
+        if (!empty($registered['id'] ?? '')) {
+            return $registered;
         }
 
-        $created = $this->repository->create(
+        return $this->repository->create(
             $this->sanitize($product)
         );
-
-        return $created[0];
     }
 
     public function sanitize(array $product): array

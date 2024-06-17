@@ -13,12 +13,14 @@ class ProductRepository extends AbstractRepository
 
     public function getById(int $id): array
     {
-        return $this->fetchAsArray(
+        $product = $this->fetchAsArray(
             "SELECT * FROM products WHERE id = :id;",
             [
                 [':id', $id, SQLITE3_INTEGER],
             ]
         );
+
+        return $product[0] ?? [];
     }
 
     public function findByUniqueKey(array $product)
@@ -60,8 +62,12 @@ class ProductRepository extends AbstractRepository
         $query .= ");";
 
         $SQLite3 = $this->getSQLite3();
-        $SQLite3->exec($query);
-        return $this->findByUniqueKey($product);
+        if (!$SQLite3->exec($query)) {
+            throw new \RuntimeException('Database insert failed');
+        }
+
+        $created = $this->findByUniqueKey($product);
+        return $created[0];
     }
 }
 

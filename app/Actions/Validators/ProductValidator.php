@@ -38,6 +38,12 @@ class ProductValidator
                 break;
             }
 
+            if ($rules == "int" && $product[$field] <= 0) {
+                $this->message = "The field {$field} must be greater than zero";
+                $this->isValid = false;
+                break;
+            }
+
             if ($rules == "string" && false == is_string($product[$field])) {
                 $this->message = "The field {$field} must be string";
                 $this->isValid = false;
