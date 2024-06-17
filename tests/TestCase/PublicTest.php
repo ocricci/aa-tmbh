@@ -48,6 +48,14 @@ class PublicTest extends TestCase
         $this->assertJsonData((new ProductMemoryRepository())->getAll(), $response);
     }
 
+    public function testProductById()
+    {
+        $request = $this->createRequest('GET', '/products/1');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData((new ProductMemoryRepository())->getById(1), $response);
+    }
+
     public function testPageNotFound(): void
     {
         $request = $this->createRequest('GET', '/nada');
