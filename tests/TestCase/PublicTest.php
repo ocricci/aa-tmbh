@@ -185,6 +185,37 @@ class PublicTest extends TestCase
         $this->assertJsonData($mockAssociation + $product, $response);
     }
 
+    public function testAssociationSupplier()
+    {
+        $productRepo = new ProductMemoryRepository();
+        $products = $productRepo->getAll();
+        $request = $this->createJsonRequest('GET', '/suppliers/1/products');
+        $response = $this->app->handle($request);
+        $associations = [
+            ['stock' => 10, 'price' => 29],
+            ['stock' => 12, 'price' => 39],
+        ];
+
+        $comparable = [];
+        foreach ($products as $product) {
+            $comparable[] = $associations[$product['id'] - 1] + $product;
+        }
+
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData($comparable, $response);
+    }
+
+    public function testAssociationSupplierProduct()
+    {
+        $productRepo = new ProductMemoryRepository();
+        $product = $productRepo->getById(1);
+        $request = $this->createJsonRequest('GET', '/suppliers/1/products/1');
+        $response = $this->app->handle($request);
+        $association = ['stock' => 10, 'price' => 29];
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData($association + $product, $response);
+    }
+
     public function testAssociationInvalidPayload()
     {
         $mockAssociation = [];
