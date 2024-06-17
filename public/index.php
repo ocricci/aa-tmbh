@@ -4,6 +4,7 @@ use DI\Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Container\ContainerInterface;
+use App\Controllers\AssociationController;
 use App\Controllers\SupplierController;
 use App\Controllers\BootController;
 use App\Controllers\ProductController;
@@ -50,6 +51,16 @@ $container->set(ProductController::class, function (ContainerInterface $containe
     );
 });
 
+$container->set(AssociationController::class, function (ContainerInterface $container) {
+    return new AssociationController(
+        new \App\Actions\AssociationAction(
+            new \App\Repositories\AssociationRepository(),
+            new \App\Repositories\SupplierRepository(),
+            new \App\Repositories\ProductRepository()
+        )
+    );
+});
+
 // migrate and seed the SQLite3 database
 $app->get('/boot', [BootController::class, 'boot']);
 
@@ -59,5 +70,7 @@ $app->get('/suppliers/{id}', [SupplierController::class, 'getById']);
 $app->get('/products', [ProductController::class, 'getAll']);
 $app->get('/products/{id}', [ProductController::class, 'getById']);
 $app->post('/products', [ProductController::class, 'create']);
+
+$app->post('/suppliers/{sid}/products/{pid}', [AssociationController::class, 'supplierWithProduct']);
 
 $app->run();
