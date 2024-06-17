@@ -67,8 +67,7 @@ class ProductRepository extends AbstractRepository
             throw new \RuntimeException('Database insert failed');
         }
 
-        $created = $this->getByUniqueKey($product);
-        return $created[0];
+        return $this->getByUniqueKey($product);
     }
 }
 
