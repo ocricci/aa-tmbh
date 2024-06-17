@@ -25,5 +25,17 @@ class Product
         "width" => SQLITE3_INTEGER,
         "length" => SQLITE3_INTEGER,
     ];
+
+    public static function format(array $product = []): array
+    {
+        $toLower = ["species", "grading_system", "grade", "drying", "treatment",];
+        foreach ($toLower as $field) {
+            if (!empty($product[$field])) {
+                $product[$field] = strtolower($product[$field]);
+            }
+        }
+
+        return $product;
+    }
 }
 
