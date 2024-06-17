@@ -7,14 +7,56 @@ use Psr\Http\Message\ResponseInterface;
 
 class AssociationController extends AbstractController
 {
-    public function supplierWithProduct(
+    public function getAll(
         ServerRequestInterface $request,
         ResponseInterface $response,
         array $args
     ): ResponseInterface {
 
-        $sid = (int) $args['pid'] ?? '';
-        $pid = (int) $args['sid'] ?? '';
+        $sid = (int) $args['sid'] ?? '';
+        if (empty($sid)) {
+            return $this->handleUnprocessableEntityResponse(
+                $response,
+                "Invalid id informed"
+            );
+        }
+
+        return $this->handleSuccessResponse(
+            $response,
+            $this->action->getAll($sid)
+        );
+     }
+
+    public function getById(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args
+    ): ResponseInterface {
+
+        $sid = (int) $args['sid'] ?? '';
+        $pid = (int) $args['pid'] ?? '';
+
+        if (empty($sid) || empty($pid)) {
+            return $this->handleUnprocessableEntityResponse(
+                $response,
+                "Invalid id informed"
+            );
+        }
+
+        return $this->handleSuccessResponse(
+            $response,
+            $this->action->getById($sid, $pid)
+        );
+    }
+
+    public function associate(
+        ServerRequestInterface $request,
+        ResponseInterface $response,
+        array $args
+    ): ResponseInterface {
+
+        $sid = (int) $args['sid'] ?? '';
+        $pid = (int) $args['pid'] ?? '';
 
         if (empty($sid) || empty($pid)) {
             return $this->handleUnprocessableEntityResponse(

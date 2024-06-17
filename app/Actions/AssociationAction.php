@@ -4,7 +4,6 @@ namespace App\Actions;
 
 use App\Actions\Validators\AssociationValidator;
 use App\Repositories\RepositoryInterface;
-use App\Entities\Association;
 
 class AssociationAction extends AbstractAction
 {
@@ -13,6 +12,16 @@ class AssociationAction extends AbstractAction
         protected RepositoryInterface $supplierRepository,
         protected RepositoryInterface $productRepository,
     ) {
+    }
+
+    public function getAll(int $sid): array
+    {
+        return $this->repository->getAll($sid);
+    }
+
+    public function getById(int $sid, int $pid): array
+    {
+        return $this->repository->getById($sid, $pid);
     }
 
     public function validate(int $sid, int $pid, array $assoc = []): AssociationValidator 

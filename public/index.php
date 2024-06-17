@@ -71,6 +71,8 @@ $app->get('/products', [ProductController::class, 'getAll']);
 $app->get('/products/{id}', [ProductController::class, 'getById']);
 $app->post('/products', [ProductController::class, 'create']);
 
-$app->post('/suppliers/{sid}/products/{pid}', [AssociationController::class, 'supplierWithProduct']);
+$app->get('/suppliers/{sid}/products', [AssociationController::class, 'getAll']);
+$app->get('/suppliers/{sid}/products/{pid}', [AssociationController::class, 'getById']);
+$app->post('/suppliers/{sid}/products/{pid}', [AssociationController::class, 'associate']);
 
 $app->run();
