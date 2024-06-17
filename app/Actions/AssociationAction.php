@@ -34,10 +34,17 @@ class AssociationAction extends AbstractAction
         );
 
         $validator->validate($sid, $pid, $assoc);
-        if (false == $validator->isValid()) {
-            return $validator;
-        }
+        return $validator;
+    }
 
+    public function validateEntities(int $sid, int $pid)
+    {
+        $validator = new AssociationValidator(
+            $this->supplierRepository,
+            $this->productRepository
+        );
+
+        $validator->validateEntities($sid, $pid);
         return $validator;
     }
 

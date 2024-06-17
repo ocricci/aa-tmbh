@@ -43,6 +43,15 @@ class AssociationController extends AbstractController
             );
         }
 
+        $validator = $this->action->validateEntities($sid, $pid);
+        if (false == $validator->isValid()) {
+            return $this->unexpectedResponse(
+                $response,
+                $validator->getMessage(),
+                $validator->getHttpCode()
+            );
+        }
+
         return $this->handleSuccessResponse(
             $response,
             $this->action->getById($sid, $pid)
@@ -68,9 +77,10 @@ class AssociationController extends AbstractController
         $parsedBody = $request->getParsedBody();
         $validator = $this->action->validate($sid, $pid, $parsedBody);
         if (false == $validator->isValid()) {
-            return $this->handleUnprocessableEntityResponse(
+            return $this->unexpectedResponse(
                 $response,
-                $validator->getMessage()
+                $validator->getMessage(),
+                $validator->getHttpCode()
             );
         }
 

@@ -166,6 +166,83 @@ class PublicTest extends TestCase
         $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
     }
 
+    public function testAssociation()
+    {
+        $mockAssociation = [
+            "stock" => 120,
+            "price" => 10
+        ];
+
+        $productRepo = new ProductMemoryRepository();
+        $product = $productRepo->getById(1);
+        $request = $this->createJsonRequest('POST', '/suppliers/1/products/1', $mockAssociation);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+
+        // simulate the treatment middleware
+        unset($product['treatment']);
+        $mockAssociation['treatment'] = 'null';
+        $this->assertJsonData($mockAssociation + $product, $response);
+    }
+
+    public function testAssociationInvalidPayload()
+    {
+        $mockAssociation = [];
+        $request = $this->createJsonRequest('POST', '/suppliers/1/products/1', $mockAssociation);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+        $this->assertResponseContains('Field [stock] is required', $response);
+    }
+
+    public function testAssociationUnprocessableEntity()
+    {
+        $request = $this->createRequest('GET', '/suppliers/1/products/aaaaa');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+    }
+
+    public function testAssociationNotFound()
+    {
+        $request = $this->createRequest('GET', '/suppliers/100/products/1');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
+
+        $request = $this->createRequest('GET', '/suppliers/100/products/1');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
+    }
+
+    public function testAssociationCreateNotFound()
+    {
+        $mockAssociation = [
+            "stock" => 120,
+            "price" => 10
+        ];
+
+        $request = $this->createJsonRequest('POST', '/suppliers/100/products/1', $mockAssociation);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
+        $this->assertResponseContains('Supplier entity not found', $response);
+
+        $request = $this->createJsonRequest('POST', '/suppliers/1/products/100', $mockAssociation);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
+        $this->assertResponseContains('Product entity not found', $response);
+    }
+
+    public function testAssociationCreateUnprocessable()
+    {
+        $mock = ["stock" => 120, "price" => 10];
+        foreach ($mock as $field => $value) {
+            $mockAssociation = $mock;
+            unset($mockAssociation[$field]);
+            $mockAssociation[$field . 'x'] = 10;
+            $request = $this->createJsonRequest('POST', '/suppliers/1/products/1', $mockAssociation);
+            $response = $this->app->handle($request);
+            $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+        }
+    }
+
     public function testPageNotFound(): void
     {
         $request = $this->createRequest('GET', '/nada');

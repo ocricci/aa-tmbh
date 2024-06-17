@@ -2,7 +2,8 @@
 
 namespace App\Actions\Validators;
 
-use App\Repositories\RepositoryInterface;
+use App\Repositories\Interfaces\SupplierRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Entities\Association;
 
 class AssociationValidator
@@ -11,25 +12,17 @@ class AssociationValidator
 
     protected string $message = '';
 
+    protected int $httpCode = 422;
+
     public function __construct(
-        protected RepositoryInterface $supplierRepository,
-        protected RepositoryInterface $productRepository
+        protected SupplierRepositoryInterface $supplierRepository,
+        protected ProductRepositoryInterface $productRepository
     ) {
     }
 
     public function validate(int $sid, int $pid, array $association = [])
     {
-        $supplier = $this->supplierRepository->getById($sid);
-        if (empty($supplier['id'])) {
-            $this->isValid = false;
-            $this->message = "Supplier entity not found for id [{$sid}]";
-            return;
-        }
-
-        $product = $this->productRepository->getById($pid);
-        if (empty($product['id'])) {
-            $this->isValid = false;
-            $this->message = "Supplier entity not found for id [{$sid}]";
+        if (false == $this->validateEntities($sid, $pid)) {
             return;
         }
 
@@ -64,6 +57,37 @@ class AssociationValidator
         }
     }
 
+    public function validateEntities(int $sid, int $pid): bool
+    {
+        return $this->validateSupplier($sid) && $this->validateProduct($pid);
+    }
+
+    public function validateSupplier(int $sid): bool
+    {
+        $supplier = $this->supplierRepository->getById($sid);
+        if (empty($supplier['id'])) {
+            $this->isValid = false;
+            $this->message = "Supplier entity not found for id [{$sid}]";
+            $this->httpCode = 404;
+            return false;
+        }
+
+        return true;
+    }
+
+    public function validateProduct(int $pid): bool
+    {
+        $product = $this->productRepository->getById($pid);
+        if (empty($product['id'])) {
+            $this->isValid = false;
+            $this->message = "Product entity not found for id [{$pid}]";
+            $this->httpCode = 404;
+            return false;
+        }
+
+        return true;
+    }
+
     public function isValid(): bool
     {
         return $this->isValid;
@@ -72,6 +96,11 @@ class AssociationValidator
     public function getMessage(): string
     {
         return $this->message;
+    }
+
+    public function getHttpCode(): int
+    {
+        return $this->httpCode;
     }
 }
 

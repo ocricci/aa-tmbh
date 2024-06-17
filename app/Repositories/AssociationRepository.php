@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
-class AssociationRepository extends AbstractRepository
+use App\Repositories\Interfaces\AssociationRepositoryInterface;
+
+class AssociationRepository extends AbstractRepository implements AssociationRepositoryInterface
 {
     public function getAll(int $sid): array
     {
