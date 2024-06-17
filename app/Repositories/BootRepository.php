@@ -33,6 +33,20 @@ SQL
 SQL
         );
 
+        $SQLite3->exec(
+            <<<SQL
+                CREATE TABLE IF NOT EXISTS supplier_has_product(
+                    supplier_id INT NOT NULL,
+                    product_id INT NOT NULL,
+                    stock INT NOT NULL DEFAULT 0,
+                    price NUMERIC NOT NULL DEFAULT 0,
+                    PRIMARY KEY (supplier_id, product_id),
+                    FOREIGN KEY(supplier_id) REFERENCES supplier(id),
+                    FOREIGN KEY(product_id) REFERENCES product(id)
+                );
+SQL
+        );
+
         return true;
     }
 
