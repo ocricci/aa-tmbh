@@ -70,6 +70,16 @@ POST /suppliers/{id}/products/{id}
 
 ---
 
+Running unit tests:
+
+```
+cd timberhub
+docker compose exec php bash
+composer test
+```
+
+---
+
 About the project
 -----------------
 
