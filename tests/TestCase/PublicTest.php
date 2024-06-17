@@ -18,5 +18,32 @@ class PublicTest extends TestCase
         $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertResponseContains('Timberhub!', $response);
     }
+
+    public function testSupplierList()
+    {
+        $request = $this->createRequest('GET', '/suppliers');
+        $response = $this->app->handle($request);
+
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertResponseContains('id', $response);
+        $this->assertResponseContains('name', $response);
+    }
+
+    public function testSupplierById()
+    {
+        $request = $this->createRequest('GET', '/suppliers/1');
+        $response = $this->app->handle($request);
+
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData(['id' => 1, 'name' => 'Memory Supplier'], $response);
+    }
+
+    public function testPageNotFound(): void
+    {
+        $request = $this->createRequest('GET', '/nada');
+        $request->withHeader('Accept', 'application/json');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
+    }
 }
 

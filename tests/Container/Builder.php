@@ -36,7 +36,7 @@ class Builder
                 $container->set(SupplierController::class, function (ContainerInterface $container) {
                     return new SupplierController(
                         new \App\Actions\SupplierAction(
-                            new \App\Repositories\SupplierRepository()
+                            new \App\Test\Repositories\SupplierMemoryRepository()
                         )
                     );
                 });
@@ -71,6 +71,11 @@ class Builder
                 $app->post('/suppliers/{sid}/products/{pid}', [AssociationController::class, 'associate']);
 
                 // Register middleware
+                $app->add(new UniqueNullableMiddleware());
+                $app->addBodyParsingMiddleware();
+                $app->addRoutingMiddleware();
+                $app->addErrorMiddleware(false, false, false);
+
                 return $app;
             },
         
