@@ -24,7 +24,6 @@ class PublicTest extends TestCase
     {
         $request = $this->createRequest('GET', '/suppliers');
         $response = $this->app->handle($request);
-
         $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertResponseContains('id', $response);
         $this->assertResponseContains('name', $response);
@@ -34,16 +33,28 @@ class PublicTest extends TestCase
     {
         $request = $this->createRequest('GET', '/suppliers/1');
         $response = $this->app->handle($request);
-
         $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertJsonData(['id' => 1, 'name' => 'Memory Supplier'], $response);
+    }
+
+    public function testSupplierUnprocessableEntity()
+    {
+        $request = $this->createRequest('GET', '/suppliers/aaaaa');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+    }
+
+    public function testSupplierNotFound()
+    {
+        $request = $this->createRequest('GET', '/suppliers/100');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testProductList()
     {
         $request = $this->createRequest('GET', '/products');
         $response = $this->app->handle($request);
-
         $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertJsonData((new ProductMemoryRepository())->getAll(), $response);
     }
@@ -54,6 +65,20 @@ class PublicTest extends TestCase
         $response = $this->app->handle($request);
         $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertJsonData((new ProductMemoryRepository())->getById(1), $response);
+    }
+
+    public function testProductUnprocessableEntity()
+    {
+        $request = $this->createRequest('GET', '/products/aaaaa');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+    }
+
+    public function testProductNotFound()
+    {
+        $request = $this->createRequest('GET', '/products/100');
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_NOT_FOUND, $response->getStatusCode());
     }
 
     public function testPageNotFound(): void
