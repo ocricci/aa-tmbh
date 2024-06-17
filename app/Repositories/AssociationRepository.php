@@ -2,9 +2,11 @@
 
 namespace App\Repositories;
 
-class AssociationRepository extends AbstractRepository
+use App\Repositories\Interfaces\AssociationRepositoryInterface;
+
+class AssociationRepository extends AbstractRepository implements AssociationRepositoryInterface
 {
-    public function getAll(int $sid)
+    public function getAll(int $sid): array
     {
         return $this->fetchAsArray(
             <<<SQL
@@ -21,7 +23,7 @@ SQL,
         );
     }
 
-    public function getById(int $sid, int $pid)
+    public function getById(int $sid, int $pid): array
     {
         $supplierProduct = $this->fetchAsArray(
             <<<SQL

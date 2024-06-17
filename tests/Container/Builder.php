@@ -52,9 +52,9 @@ class Builder
                 $container->set(AssociationController::class, function (ContainerInterface $container) {
                     return new AssociationController(
                         new \App\Actions\AssociationAction(
-                            new \App\Repositories\AssociationRepository(),
-                            new \App\Repositories\SupplierRepository(),
-                            new \App\Repositories\ProductRepository()
+                            new \App\Test\Repositories\AssociationMemoryRepository(),
+                            new \App\Test\Repositories\SupplierMemoryRepository(),
+                            new \App\Test\Repositories\ProductMemoryRepository()
                         )
                     );
                 });
