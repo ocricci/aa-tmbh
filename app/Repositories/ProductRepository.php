@@ -23,7 +23,7 @@ class ProductRepository extends AbstractRepository
         return $product[0] ?? [];
     }
 
-    public function findByUniqueKey(array $product)
+    public function getByUniqueKey(array $product): array
     {
         $query = "SELECT * FROM products WHERE";
         $args = [];
@@ -35,10 +35,11 @@ class ProductRepository extends AbstractRepository
             }
         }
 
-        return $this->fetchAsArray($query, $args);
+        $registered = $this->fetchAsArray($query, $args);
+        return $registered[0] ?? [];
     }
 
-    public function create(array $product)
+    public function create(array $product): array
     {
         $query = "INSERT INTO products(";
         $query .= implode(',', array_keys($product));
@@ -66,7 +67,7 @@ class ProductRepository extends AbstractRepository
             throw new \RuntimeException('Database insert failed');
         }
 
-        $created = $this->findByUniqueKey($product);
+        $created = $this->getByUniqueKey($product);
         return $created[0];
     }
 }

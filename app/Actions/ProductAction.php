@@ -26,7 +26,7 @@ class ProductAction extends AbstractAction
 
     public function create(array $product): array
     {
-        $registered = $this->repository->findByUniqueKey($product);
+        $registered = $this->repository->getByUniqueKey($product);
         if (!empty($registered['id'] ?? '')) {
             return $registered;
         }
