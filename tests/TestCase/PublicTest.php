@@ -5,6 +5,7 @@ namespace App\Test\TestCase;
 use PHPUnit\Framework\TestCase;
 use Fig\Http\Message\StatusCodeInterface;
 use App\Test\Traits\AppTestTrait;
+use App\Test\Repositories\ProductMemoryRepository;
 
 class PublicTest extends TestCase
 {
@@ -36,6 +37,15 @@ class PublicTest extends TestCase
 
         $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
         $this->assertJsonData(['id' => 1, 'name' => 'Memory Supplier'], $response);
+    }
+
+    public function testProductList()
+    {
+        $request = $this->createRequest('GET', '/products');
+        $response = $this->app->handle($request);
+
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData((new ProductMemoryRepository())->getAll(), $response);
     }
 
     public function testPageNotFound(): void

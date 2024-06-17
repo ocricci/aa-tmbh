@@ -44,7 +44,7 @@ class Builder
                 $container->set(ProductController::class, function (ContainerInterface $container) {
                     return new ProductController(
                         new \App\Actions\ProductAction(
-                            new \App\Repositories\ProductRepository()
+                            new \App\Test\Repositories\ProductMemoryRepository()
                         )
                     );
                 });
