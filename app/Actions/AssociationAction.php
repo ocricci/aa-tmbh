@@ -3,14 +3,16 @@
 namespace App\Actions;
 
 use App\Actions\Validators\AssociationValidator;
+use App\Repositories\Interfaces\SupplierRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Repositories\RepositoryInterface;
 
 class AssociationAction extends AbstractAction
 {
     public function __construct(
         protected RepositoryInterface $repository,
-        protected RepositoryInterface $supplierRepository,
-        protected RepositoryInterface $productRepository,
+        protected SupplierRepositoryInterface $supplierRepository,
+        protected ProductRepositoryInterface $productRepository,
     ) {
     }
 
