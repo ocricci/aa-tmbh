@@ -13,7 +13,9 @@ services:
     links:
       - php
   php:
-    build: docker/php
+    build:
+      context: ./
+      dockerfile: docker/php/Dockerfile
     container_name: timberhub_php
     expose:
       - 8000
