@@ -51,7 +51,11 @@ class ProductMemoryRepository implements RepositoryInterface, ProductRepositoryI
     {
         foreach ($this->data as $storedProduct) {
             foreach (array_keys($this->data[0]) as $field) {
-                if ($product[$field] ?? '' != $storedProduct[$field] ?? '') {
+                if ($field == "id") {
+                    continue;
+                }
+
+                if (($product[$field] ?? '') != ($storedProduct[$field] ?? '')) {
                     continue 2;
                 } 
             }

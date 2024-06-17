@@ -67,6 +67,91 @@ class PublicTest extends TestCase
         $this->assertJsonData((new ProductMemoryRepository())->getById(1), $response);
     }
 
+    public function testProductCreate()
+    {
+        $mockProduct = [
+            "species" => "pine",
+            "grading_system" => "nordic_blue",
+            "grade" => "aaa1aaa",
+            "drying" => "fresh",
+            "treatment" => "null",
+            "thickness" => 50,
+            "width" => 120,
+            "length" => 1200
+        ];
+
+        $repo = new ProductMemoryRepository();
+        $products = $repo->getAll();
+        $id = count($products) + 1;
+        $request = $this->createJsonRequest('POST', '/products', $mockProduct);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData($mockProduct + ['id' => $id], $response);
+    }
+
+    public function testProductAlreadyCreated()
+    {
+        $repo = new ProductMemoryRepository();
+        $product = $repo->getById(1);
+        $mockProduct = $product;
+        unset($mockProduct['id']);
+        $request = $this->createJsonRequest('POST', '/products', $mockProduct);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $this->assertJsonData($product, $response);
+    }
+
+    public function testInvalidProductPayload()
+    {
+        $repo = new ProductMemoryRepository();
+        $product = $repo->getById(1);
+        $mockProduct = $product;
+        unset($mockProduct['id'], $mockProduct['species']);
+        $request = $this->createJsonRequest('POST', '/products', $mockProduct);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+        $this->assertResponseContains('The field species is required', $response);
+    }
+
+    public function testInvalidTypeInProductPayload()
+    {
+        $repo = new ProductMemoryRepository();
+        $product = $repo->getById(1);
+        $mockProduct = $product;
+        unset($mockProduct['id']);
+        $mockProduct['species'] = 1;
+        $request = $this->createJsonRequest('POST', '/products', $mockProduct);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY, $response->getStatusCode());
+        $this->assertResponseContains(
+            'Unknown value [1] for [species], supported values are [pine, spruce, fir, birch, apple_tree]',
+            $response
+        );
+    }
+
+    public function testFormatProductPayload()
+    {
+        $mockProduct = [
+            "species" => "pine",
+            "grading_system" => "nordic_blue",
+            "grade" => "AAAAA",
+            "drying" => "fresh",
+            "treatment" => "null",
+            "thickness" => 50,
+            "width" => 120,
+            "length" => 1200
+        ];
+
+        $repo = new ProductMemoryRepository();
+        $products = $repo->getAll();
+        $id = count($products) + 1;
+        $request = $this->createJsonRequest('POST', '/products', $mockProduct);
+        $response = $this->app->handle($request);
+        $this->assertSame(StatusCodeInterface::STATUS_OK, $response->getStatusCode());
+        $mockProduct['grade'] = strtolower($mockProduct['grade']);
+        $this->assertJsonData($mockProduct + ['id' => $id], $response);
+    }
+
     public function testProductUnprocessableEntity()
     {
         $request = $this->createRequest('GET', '/products/aaaaa');
