@@ -62,7 +62,9 @@ class ProductRepository extends AbstractRepository
         $query .= ");";
 
         $SQLite3 = $this->getSQLite3();
-        $SQLite3->exec($query);
+        if (!$SQLite3->exec($query)) {
+            throw new \RuntimeException('Database insert failed');
+        }
 
         $created = $this->findByUniqueKey($product);
         return $created[0];
