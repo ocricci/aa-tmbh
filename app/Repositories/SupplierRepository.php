@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
-class SupplierRepository extends AbstractRepository
+use App\Repositories\Interfaces\SupplierRepositoryInterface;
+
+class SupplierRepository extends AbstractRepository implements SupplierRepositoryInterface
 {
     public function getAll(): array
     {

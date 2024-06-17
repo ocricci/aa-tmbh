@@ -26,6 +26,8 @@ class ProductAction extends AbstractAction
 
     public function create(array $product): array
     {
+        $product = Product::format($product);
+
         $registered = $this->repository->getByUniqueKey($product);
         if (!empty($registered['id'] ?? '')) {
             return $registered;

@@ -2,9 +2,10 @@
 
 namespace App\Repositories;
 
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use App\Entities\Product;
 
-class ProductRepository extends AbstractRepository
+class ProductRepository extends AbstractRepository implements ProductRepositoryInterface
 {
     public function getAll(): array
     {

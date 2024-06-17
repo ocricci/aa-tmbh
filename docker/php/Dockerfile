@@ -13,4 +13,5 @@ CMD mkdir -p /app/storage \
   && chmod -R 0777 /app/storage/ \
   && chmod -R 0777 /app/storage/timberhub.db3 \
   && composer install \
+  && composer dump-autoload -o \
   && php-fpm

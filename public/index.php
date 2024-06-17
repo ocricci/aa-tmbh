@@ -4,6 +4,7 @@ use DI\Container;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use App\Controllers\AssociationController;
 use App\Controllers\SupplierController;
 use App\Controllers\BootController;
@@ -22,6 +23,8 @@ $app = AppFactory::create();
 // middlewares
 $app->add(new UniqueNullableMiddleware());
 $app->addBodyParsingMiddleware();
+$app->addRoutingMiddleware();
+$app->addErrorMiddleware(false, true, true);
 
 // routes
 $app->get('/', function (Request $request, Response $response, $args) {
